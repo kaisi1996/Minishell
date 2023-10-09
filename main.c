@@ -6,7 +6,7 @@
 /*   By: aalkaisi <aalkaisi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/07 18:55:17 by aalkaisi          #+#    #+#             */
-/*   Updated: 2023/10/09 12:46:48 by aalkaisi         ###   ########.fr       */
+/*   Updated: 2023/10/09 13:23:13 by aalkaisi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -323,17 +323,17 @@ void	find_syntax_error(char	*str)
 	double_symbol_error(str);
 }
 
-void	reorder(char *str)
-{
-	int	i;
+// void	re_order(char *str)
+// {
+// 	int	i;
 
-	i = 0;
-	while (str[i] != '\0')
-	{
+// 	i = 0;
+// 	while (str[i] != '\0')
+// 	{
 		
-		i++;
-	}
-}
+// 		i++;
+// 	}
+// }
 
 int	main(int argc, char **argv)
 {
