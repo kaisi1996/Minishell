@@ -6,7 +6,7 @@
 /*   By: aalkaisi <aalkaisi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 19:45:25 by aalkaisi          #+#    #+#             */
-/*   Updated: 2023/10/10 14:07:40 by aalkaisi         ###   ########.fr       */
+/*   Updated: 2023/10/11 18:44:26 by aalkaisi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,8 @@ int	num_of_strs(char *s, char c)
 	{
 		while (inside_qut(s, i, qut_num, 1) == 1 || s[i] == c)
 			i++;
+		if (s[i] != '\'' || s[i] != '"')
+			i++;
 		if (s[i] != c && s[i] != '\0')
 		{
 			num++;
@@ -91,7 +93,8 @@ char	**save_results(char *s, char c, int num, char **res)
 	{
 		while (inside_qut(s, z.i, qut_num, 1) == 0 && s[z.i] == c)
 			z.i++;
-		// printf("0 s[%d] = %c\n", z.i, s[z.i]);
+		if (s[z.i] == '\'' || s[z.i] == '"')
+			inside_qut(s, z.i, qut_num, 1);
 		if (s[z.i] == '\0')
 			break ;
 		if (s[z.i] != c && s[z.i] != '\0')
@@ -108,7 +111,7 @@ char	**save_results(char *s, char c, int num, char **res)
 			z.end = z.i;
 		}
 		res[num] = ft_substr(s, z.start, (size_t)(z.end - z.start));
-		// printf("1 res = %s\n", res[num]);
+		printf("1 res = %s.\n", res[num]);
 		if (res[num] == NULL)
 			return (NULL);
 		num++;
@@ -129,7 +132,9 @@ char	**ft_split(char *s, char c, t_execution *z)
 	res = (char **)malloc(sizeof(char *) * (num + 1));
 	if (res == NULL)
 		exit(1);
+	printf("22222.\n");
 	res = save_results(s, c, num, res);
+	printf("22222.\n");
 	if (res == NULL)
 		exit(1);
 	return (res);

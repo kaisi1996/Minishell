@@ -6,7 +6,7 @@
 /*   By: aalkaisi <aalkaisi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/07 18:55:17 by aalkaisi          #+#    #+#             */
-/*   Updated: 2023/10/11 16:46:11 by aalkaisi         ###   ########.fr       */
+/*   Updated: 2023/10/11 19:18:45 by aalkaisi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -361,8 +361,8 @@ void	size_of_all_redirections(char *str, t_execution *z)
 		if (str[i] != '<' && str[i] != '>' && str[i] != '\'' && str[i] != '"')
 			i++;
 	}
-	z->is_file_or_here_doc = malloc(sizeof(int) * size[0]);
-	z->is_file_or_append = malloc(sizeof(int) * size[1]);
+	z->is_file_or_here_doc = malloc(sizeof(int) * (size[0] + 1));
+	z->is_file_or_append = malloc(sizeof(int) * (size[1] + 1));
 	z->fd_infile = malloc(sizeof(int) * size[0]);
 	z->fd_outfile = malloc(sizeof(int) * size[1]);
 	if (z->is_file_or_here_doc == NULL || z->is_file_or_append == NULL || 
@@ -409,6 +409,8 @@ void	identify_file_type(char	*str, t_execution *z)
 		if (str[i] != '<' && str[i] != '>' && str[i] != '\'' && str[i] != '"')
 			i++;
 	}
+	z->is_file_or_here_doc[size[0]] = -1;
+	z->is_file_or_append[size[1]] = -1;
 }
 
 void	redirections(char *str, t_execution *z)
@@ -478,6 +480,7 @@ void	num_of_files_in_each_part(char **str, t_execution *z)
 		while (str[j][i] != '\0')
 		{
 			skip_qut(str[j], &i);
+			// printf("8: %c\n", str[j][i]);
 			if ((str[j][i] == '<' || str[j][i] == '>') && str[j][i] != '\'' 
 				&& str[j][i] != '"')
 			{
@@ -524,7 +527,7 @@ void	num_of_chars_in_each_file(char **str, t_execution *z)
 	qut_num[0] = 0;
 	qut_num[1] = 0;
 	qut_symbol = 'N';
-	// printf(">> %s, %s, %s\n", str[0], str[1], str[2]);
+	printf(">> %s, %s, %s\n", str[0], str[1], str[2]);
 	while (str[j] != NULL)
 	{
 		i = 0;
@@ -557,11 +560,9 @@ void	num_of_chars_in_each_file(char **str, t_execution *z)
 					else if (inside_qut(str[j], i, qut_num, 2) == 0 && qut_symbol == str[j][i])
 					{
 						qut_symbol = 'N';
-						// printf("----------------\n");
 					}
 					else
 						num_of_chars++;
-					// printf("3>>>%d, %d\n", size, inside_qut(str[j], i, qut_num, 2));
 					i++;
 				}
 				printf("---------------------------------------------- %d, %d\n", num_of_chars, j);
@@ -574,9 +575,9 @@ void	num_of_chars_in_each_file(char **str, t_execution *z)
 				else
 					size[1]++;
 			}
-			if (str[j][i] != '<' && str[j][i] != '>' && str[j][i] != '\'' 
-				&& str[j][i] != '"')
+			if (str[j][i] != '<' && str[j][i] != '>')
 				i++;
+			printf("%d\n", i);
 		}
 		z->infile_name[j][size[0]] = NULL;
 		z->outfile_name[j][size[1]] = NULL;
@@ -586,19 +587,18 @@ void	num_of_chars_in_each_file(char **str, t_execution *z)
 
 void	put_chars_in_each_file(char **str, t_execution *z)
 {
-	int			i;
-	int			j;
-	int			qut_num[2];
-	int			symbol;
-	int			num_of_chars;
-	int			size[2];
-	char		qut_symbol;
+	int		i;
+	int		j;
+	int		qut_num[2];
+	int		symbol;
+	int		num_of_chars;
+	int		size[2];
+	char	qut_symbol;
 
 	j = 0;
 	qut_num[0] = 0;
 	qut_num[1] = 0;
 	qut_symbol = 'N';
-	// printf(">> %s, %s, %s\n", str[0], str[1], str[2]);
 	while (str[j] != NULL)
 	{
 		i = 0;
@@ -625,18 +625,15 @@ void	put_chars_in_each_file(char **str, t_execution *z)
 							, i, qut_num, 2) == 0 && str[j][i] != ' ' && 
 					str[j][i] != '<' && str[j][i] != '>' && str[j][i] != '\0'))
 				{
-					// printf("1>>>%c, %i, %i\n", str[j][i], i, inside_qut(str[j], i, qut_num, 2));
 					if (inside_qut(str[j], i, qut_num, 2) == 1 && (str[j][i] == '\'' || str[j][i] == '"') && (qut_symbol == str[j][i] || qut_symbol == 'N'))
 					{
 						qut_symbol = str[j][i];
 						str[j][i] = ' ';
-						// printf("lllllllllllllll\n");
 					}
 					else if (inside_qut(str[j], i, qut_num, 2) == 0 && qut_symbol == str[j][i])
 					{
 						qut_symbol = 'N';
 						str[j][i] = ' ';
-						// printf("----------------\n");
 					}
 					else
 					{
@@ -647,11 +644,8 @@ void	put_chars_in_each_file(char **str, t_execution *z)
 						num_of_chars++;
 						str[j][i] = ' ';
 					}
-					// printf("3>>>%d, %d\n", size, inside_qut(str[j], i, qut_num, 2));
 					i++;
 				}
-				// printf("zz\n");
-				printf(">>>>>>>> %d, \n", num_of_chars);
 				if (symbol == 1 || symbol == 2)
 					z->infile_name[j][size[0]][num_of_chars] = '\0';
 				else
@@ -665,12 +659,53 @@ void	put_chars_in_each_file(char **str, t_execution *z)
 				else
 					size[1]++;
 			}
-			if (str[j][i] != '<' && str[j][i] != '>' && str[j][i] != '\'' 
-				&& str[j][i] != '"')
+			if (str[j][i] != '<' && str[j][i] != '>')
 				i++;
 		}
 		printf("-------------------------------------%s\n", str[j]);
 		j++;
+	}
+}
+
+
+void	check_solution(t_execution *z)
+{
+	int i = 0;
+	int j = 0;
+	
+	while (z->infile_name[i] != NULL)
+	{
+		j = 0;
+		while (z->infile_name[i][j] != NULL)
+		{
+			printf("z->infile_name[%d][%d]: %s,\n", i, j, z->infile_name[i][j]);
+			j++;
+		}
+		i++;
+	}
+	i = 0;
+	j = 0;
+	while (z->outfile_name[i] != NULL)
+	{
+		j = 0;
+		while (z->outfile_name[i][j] != NULL)
+		{
+			printf("z->outfile_name[%d][%d]: %s,\n", i, j, z->outfile_name[i][j]);
+			j++;
+		}
+		i++;
+	}
+	i = 0;
+	while (z->is_file_or_here_doc[i] != -1)
+	{
+		printf("z->is_file_or_here_doc[%d]: %d\n", i, z->is_file_or_here_doc[i]);
+		i++;
+	}
+	i = 0;
+	while (z->is_file_or_append[i] != -1)
+	{
+		printf("z->is_file_or_append[%d]: %d\n", i, z->is_file_or_append[i]);
+		i++;
 	}
 }
 
@@ -744,7 +779,7 @@ int	main(void)
 	t_execution	z;
 
 	printf("HIIII\n");
-	str = ft_strdup(" \t >d'hellckldns|kn|x \" <<<'   <ror<rere<<see   >    'l''c'd  b|   >>   \" \"c\t\t   ");
+	str = ft_strdup(" \t 'eco'    'r'r >d'hellckldns|kn|x \" <<<   '   <ror<rere<<see   >    'l''c'd  \"b\"|  >>   \" \"c\t\t  lol ");
 	if (str == NULL)
 		return (1);
 	check_qut_error(str);
@@ -756,20 +791,30 @@ int	main(void)
 	printf("--->%s.%zu\n", str, ft_strlen(str));
 	if (str == NULL)
 		return (1);
+	printf("11111.\n");
 	find_syntax_error(str);
-	printf("%s.\n", str);
+	printf("%s...\n", str);
 	printf("11111.\n");
 	redirections(str, &z);
+	printf("%s..\n", str);
+	printf("11111.\n");
 	res = ft_split(str, '|', &z);
+	printf("77777.\n");
 	printf("%s, %s, %s.\n", res[0], res[1], res[2]);
 	i = -1;
 	while (res[++i] != NULL)
 		res[i] = ft_strtrim(res[i], " ");
 	many_malloc(&z);
 	printf("%s, %s, %s.\n", res[0], res[1], res[2]);
+	printf("11111.\n");
 	num_of_files_in_each_part(res, &z);
+	printf("11111.\n");
 	num_of_chars_in_each_file(res, &z);
+	printf("11111.\n");
 	put_chars_in_each_file(res, &z);
+
+
+	check_solution(&z);
 	// re_order(res, &z);
 	free(str);
 }
