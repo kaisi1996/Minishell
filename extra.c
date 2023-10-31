@@ -6,7 +6,7 @@
 /*   By: aalkaisi <aalkaisi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 16:28:49 by aalkaisi          #+#    #+#             */
-/*   Updated: 2023/10/10 12:54:00 by aalkaisi         ###   ########.fr       */
+/*   Updated: 2023/10/30 13:45:01 by aalkaisi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,4 +96,18 @@ char	*ft_strtrim(char *s1, char *set)
 	res[i] = '\0';
 	free(s1);
 	return (res);
+}
+
+int	str_cmp(char *str, char *str2)
+{
+	int	i;
+
+	if (str == NULL || str2 == NULL)
+		return (0);
+	i = 0;
+	while (str[i] != '\0' && str2[i] != '\0' && str[i] == str2[i])
+		i++;
+	if (str[i] == '\0' && str2[i] == '\0')
+		return (1);
+	return (0);
 }

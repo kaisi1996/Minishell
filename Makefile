@@ -6,7 +6,7 @@
 #    By: aalkaisi <aalkaisi@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/22 16:27:40 by aalkaisi          #+#    #+#              #
-#    Updated: 2023/10/09 17:08:26 by aalkaisi         ###   ########.fr        #
+#    Updated: 2023/10/17 19:24:15 by aalkaisi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ all: $(NAME)
 	$(CC) $(CFLAGS) -c $^ -o $@
 	
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) -o $(NAME) -lreadline
 
 clean:
 	@rm -f $(OBJ)

@@ -6,7 +6,7 @@
 /*   By: aalkaisi <aalkaisi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 19:45:25 by aalkaisi          #+#    #+#             */
-/*   Updated: 2023/10/11 18:44:26 by aalkaisi         ###   ########.fr       */
+/*   Updated: 2023/10/30 19:02:27 by aalkaisi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,20 +63,25 @@ int	num_of_strs(char *s, char c)
 	num = 0;
 	qut_num[0] = 0;
 	qut_num[1] = 0;
+	printf("xxxxxxs[0] = %d\n", s[i]);
 	while (s[i] != '\0')
 	{
-		while (inside_qut(s, i, qut_num, 1) == 1 || s[i] == c)
+		while (inside_qut(s, i, qut_num, 1) == 0 && s[i] == c)
 			i++;
-		if (s[i] != '\'' || s[i] != '"')
-			i++;
+		if (s[i] == '\'' || s[i] == '"')
+			inside_qut(s, i, qut_num, 1);
+		if (s[i] == '\0')
+			break ;
 		if (s[i] != c && s[i] != '\0')
 		{
-			num++;
-			while (inside_qut(s, i, qut_num, 1) == 1 || (s[i] != c && 
-					s[i] != '\0'))
+			while (inside_qut(s, i, qut_num, 1) == 1 || (inside_qut(s, 
+						i, qut_num, 2) == 0 && s[i] != c && s[i] != '\0'))
 				i++;
 		}
+		printf("xxxxxxxxxxxxxxxxxxxi: %d\n", num);
+		num++;
 	}
+	printf("final: %d\n", num);
 	return (num);
 }
 
@@ -111,6 +116,7 @@ char	**save_results(char *s, char c, int num, char **res)
 			z.end = z.i;
 		}
 		res[num] = ft_substr(s, z.start, (size_t)(z.end - z.start));
+		printf("res[%d]=%s,\n", num, res[num]);
 		printf("1 res = %s.\n", res[num]);
 		if (res[num] == NULL)
 			return (NULL);
@@ -129,12 +135,13 @@ char	**ft_split(char *s, char c, t_execution *z)
 		exit(1);
 	num = num_of_strs(s, c);
 	z->cmds_num = num;
+	printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>num: %d\n", num);
 	res = (char **)malloc(sizeof(char *) * (num + 1));
 	if (res == NULL)
 		exit(1);
-	printf("22222.\n");
-	res = save_results(s, c, num, res);
-	printf("22222.\n");
+	printf("44444.%c,%s.\n", c, s);
+	save_results(s, c, num, res);
+	printf("44444.%s,\n", res[0]);
 	if (res == NULL)
 		exit(1);
 	return (res);
